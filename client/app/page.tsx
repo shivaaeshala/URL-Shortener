@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import CopyLink from "./utils/copyShortLink";
 
 export default function Home() {
   const [longUrl, setLongUrl] = useState('');
@@ -32,8 +33,8 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black text-white">
-      <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex flex-col">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center p-1 m-auto bg-black text-white">
+      <div className="z-10 p-1 w-full items-center justify-center font-mono text-sm lg:flex flex-col">
         <h1 className="text-4xl font-bold mb-8 text-blue-500">URL Shortener</h1>
         
         <form onSubmit={getShortUrl} className="flex flex-col gap-4 w-full max-w-md">
@@ -56,16 +57,20 @@ export default function Home() {
         </form>
 
         {shortUrl && (
-          <div className="mt-8 p-4 bg-gray-800 rounded border border-gray-700">
-            <p className="text-gray-400">Shortened URL:</p>
-            <a 
-              href={shortUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-green-400 text-xl font-bold hover:underline"
-            >
-              {shortUrl}
-            </a>
+          <div className=" flex flex-col shrink mt-8 p-4 bg-gray-800 rounded border border-gray-700 w-full max-w-md">
+            <p className="text-gray-400 mb-2">Shortened URL:</p>
+            <div style={{display:'flex', flexDirection:'row', justifyContent:'space-around'}}>
+              <a 
+                href={shortUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-green-400 text-xl font-bold hover:underline"
+                style={{paddingRight:'30px'}}
+              >
+                {shortUrl.substring(7)}
+              </a>
+              <CopyLink linkToCopy={shortUrl}/>
+            </div>
           </div>
         )}
       </div>
