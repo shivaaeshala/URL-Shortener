@@ -7,6 +7,7 @@ import { Pool } from 'pg';
 import { encode } from './utils/base62';
 import redisClient from './config/redis';
 import { clicksCount } from './utils/tracking';
+import { rateLimiter } from './middleware/rateLimiter';
 
 const app = express();
 
@@ -36,7 +37,7 @@ interface ShortenRequestBody {
 const ID_COUNTER_KEY = 'global_url_id';
 const URL_CACHE_PREFIX = 'url:';
 
-app.post('/shorten', async (
+app.post('/shorten', rateLimiter,async (
     req: Request<{}, {}, ShortenRequestBody>,
     res: Response
     ) => {
