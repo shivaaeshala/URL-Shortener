@@ -12,7 +12,13 @@ import { rateLimiter } from './middleware/rateLimiter';
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'https://url-shortener-frontend-umber-iota.vercel.app/',
+        'https://url-shortener-frontend-umber-iota.vercel.app',
+    ]
+}));
 
 function getDatabaseUrl():string {
     const dbURL = process.env.DATABASE_URL;
@@ -58,7 +64,7 @@ app.post('/shorten', rateLimiter,async (
 
             await redisClient.set(`${URL_CACHE_PREFIX}${shortCode}`, longUrl);
 
-            res.json({shortUrl: `http://localhost:5000/${shortCode}`});
+            res.json({shortUrl: `https://url-shortener-pink-eight.vercel.app/${shortCode}`});
         }
         catch(error) {
             console.error(error);
