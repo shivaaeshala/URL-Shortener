@@ -6,7 +6,7 @@ import cors from 'cors';
 import { Pool } from 'pg';
 import { encode } from './utils/base62';
 import redisClient from './config/redis';
-import { error } from 'node:console';
+import { clicksCount } from './utils/tracking';
 
 const app = express();
 
@@ -73,6 +73,7 @@ app.get('/:code', async (req: Request, res: Response) => {
         const cachedUrl = await redisClient.get(cacheKey);
         if(cachedUrl) {
             console.log("Cache Hit");
+            clicksCount(code);
             return res.redirect(302, cachedUrl);
         }
 
@@ -86,6 +87,7 @@ app.get('/:code', async (req: Request, res: Response) => {
         if(result.rows.length > 0) {
             const longUrl = result.rows[0].long_url;
             await redisClient.set(cacheKey, longUrl);
+            clicksCount(code);
             return res.redirect(302, longUrl);
         }
         else {

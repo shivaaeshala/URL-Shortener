@@ -18,7 +18,9 @@ export async function createTable() {
         id BIGSERIAL PRIMARY KEY,
         long_url TEXT NOT NULL,
         short_code VARCHAR(10) UNIQUE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        clicks INT DEFAULT 0,
+        expries_at TIMESTAMP
     );
     
     CREATE INDEX IF NOT EXISTS idx_short_code ON urls(short_code);
