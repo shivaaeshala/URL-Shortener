@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # --- INFRASTRUCTURE ---
+  postgres:
+    image: postgres:15-alpine
+    container_name: urlshortener_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: urlshortener
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    container_name: urlshortener_redis
+    ports:
+      - "6379:6379"
+
+  # --- BACKEND ---
+  api:
+    build: ./server
+    container_name: urlshortener_api
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://neondb_owner:npg_gUd0HTzmun7l@ep-cold-mountain-adlxu7gq-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - REDIS_URL=rediss://default:AZP3AAIncDE5Yjg1MjAzN2I1ODQ0ODU5OGRiNDdiYTUxMDRkMzZhYXAxMzc4Nzk@leading-mackerel-37879.upstash.io:6379
+      - PORT=5000
+    depends_on:
+      - postgres
+      - redis
+
+  # --- FRONTEND (NEW) ---
+  client:
+    build: ./client
+    container_name: urlshortener_client
+    ports:
+      - "3000:3000"
+    environment:
+      # This environment variable is tricky in Next.js!
+      # NEXT_PUBLIC_ variables are baked in at BUILD time.
+      # Since the browser makes the request, it still points to localhost.
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

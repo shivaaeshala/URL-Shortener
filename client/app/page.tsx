@@ -8,12 +8,14 @@ export default function Home() {
   const [shortUrl, setShortUrl] = useState('');
   const [isLoading, setIsLoading] =useState(false);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
   const getShortUrl = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/shorten', {
+      const res = await fetch(`${API_URL}/shorten`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({longUrl})
